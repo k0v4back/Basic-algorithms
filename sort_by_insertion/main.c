@@ -6,29 +6,32 @@
 
 #define arr_length(arr) sizeof(arr)/sizeof(int)
  
+void insertion_sort(int *arr, unsigned int len);
 void print_arr(int *arr, unsigned int len);
 
 int main(void)
 {
     int arr[] = {5, 2, 4, 6, 1, 3};
 
-    for(unsigned i = 1; i < arr_length(arr); i++)
+    insertion_sort(arr, arr_length(arr));
+    print_arr(arr, arr_length(arr));
+
+    return 0;
+}
+
+void insertion_sort(int *arr, unsigned int len)
+{
+    for(unsigned i = 1; i < len; i++)
     {
         int key = i;
-
-        while(i > 0 && arr[key - 1] > arr[key])
+        while(key > 0 && arr[key - 1] > arr[key])
         {
             int buf = arr[key];
             arr[key] = arr[key - 1];
             arr[key - 1] = buf;
-            key -= 1;
+            key--;
         }
-        
     }
-    
-    print_arr(arr, arr_length(arr));
-
-    return 0;
 }
 
 void print_arr(int * arr, unsigned len)
