@@ -29,14 +29,26 @@ struct node
 };
 
 struct node * create_node(uint8_t * format, ...);
-void free_all_nodes(struct node * node);
-
 struct node * fill_node(struct node * node, uint8_t * format, ...);
 struct node * delete_node(struct node * node); 
 void print_node(struct node * node);
+void free_all_nodes(struct node * node);
 
 int main(int argc, char **argv)
 {
+    struct node * node = create_node("drs", 555, 1.23, "hello, world!");
+    struct node * temp = fill_node(node, "d", 542);
+
+    temp = fill_node(node, "ddddd", 1, 2, 3, 4, 5);
+    temp = fill_node(node, "d", 6);
+    print_node(node);
+
+    temp = delete_node(temp);
+    free(temp);
+
+    print_node(node);
+    free_all_nodes(node);
+
     return 0;
 }
 
@@ -79,8 +91,10 @@ struct node * create_node(uint8_t * format, ...)
 
 struct node * fill_node(struct node * node, uint8_t * format, ...)
 {
-    if(node == NULL)
+    if(node == NULL){
         LOG_ERROR("%s\n.", "Node is null");
+        return NULL;
+    }
 
     /* go to end of nodes */
     while(node->next != NULL)
@@ -125,8 +139,52 @@ struct node * fill_node(struct node * node, uint8_t * format, ...)
     }
     va_end(factor);
 
+    return node;
+}
 
+struct node * delete_node(struct node * node)
+{
+    if(node == NULL){
+        LOG_ERROR("%s\n.", "Node is null");
+        return NULL;
+    }
 
+    if(node->next == NULL)
+        return node;
+
+    struct node * prev_node = node;
+    struct node * past_node = node->next;
+
+    while(past_node->next != NULL)
+    {
+        prev_node = past_node;
+        past_node = past_node->next;
+    }
+    prev_node->next = NULL;
+
+    return past_node;
+} 
+
+void print_node(struct node * node)
+{
+    printf("[ ");
+    
+    while(node != NULL)
+    {
+        switch(node->type){
+            case _DECEMAL_ELEM:
+                printf("%d ", node->value.decimal);
+                break;
+            case _REAL_ELEM:
+                printf("%lf ", node->value.real);
+                break;
+            case _STRING_ELEM:
+                printf("'%s' ", node->value.string);
+                break;
+        }
+        node = node->next;
+    }
+    printf("]\n");
 }
 
 void free_all_nodes(struct node * node)
