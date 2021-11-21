@@ -28,174 +28,148 @@ struct node
     struct node * next;
 };
 
-struct node * create_node(uint8_t * format, ...);
-struct node * fill_node(struct node * node, uint8_t * format, ...);
-struct node * delete_node(struct node * node); 
-void print_node(struct node * node);
-void free_all_nodes(struct node * node);
+static struct node * current;
+static struct node * new_node;
+static struct node * first;
+
+struct node * create_node(void);
+struct node * fill_node(uint8_t * format, ...);
+struct node * check_first_node_exist(void);
+void print_all_nodes(void);
+void delete_last_node(void); 
+void free_all_nodes(void);
 
 int main(int argc, char **argv)
 {
-    struct node * node = create_node("drs", 555, 1.23, "hello, world!");
-    struct node * temp = fill_node(node, "d", 542);
+    struct node * temp = NULL;
 
-    temp = fill_node(node, "ddddd", 1, 2, 3, 4, 5);
-    temp = fill_node(node, "d", 6);
-    print_node(node);
+    temp = fill_node("sdrdd", "HELLO", 1, 74.3, 2, 3);
 
-    temp = delete_node(temp);
-    free(temp);
-
-    print_node(node);
-    free_all_nodes(node);
+    print_all_nodes();
+    free_all_nodes();
 
     return 0;
 }
 
-struct node * create_node(uint8_t * format, ...)
+struct node * create_node(void)
 {
     struct node * new_node = (struct node *)malloc(sizeof(struct node));
-    struct node * node_ptr = new_node;
-
-    new_node->next = NULL;
-    new_node->type = _INIT_ELEM;
-    union value_node value;
-
-    va_list factor;
-    va_start(factor, format);
-    while(*format) //read each of symbols in loop
+    if(new_node == NULL)
     {
-        switch(*format)
-        {
-            case 'd': case 'i': //decimal
-               value.decimal = va_arg(factor, int32_t);
-               new_node = fill_node(new_node, "d", value.decimal);
-               break;
-            case 'r': case 'f': //real
-               value.real = va_arg(factor, double);
-               new_node = fill_node(new_node, "r", value.real);
-               break;
-            case 's':           //string
-               value.string = va_arg(factor, uint8_t *);
-               new_node = fill_node(new_node, "s", value.string);
-              break; 
-        }
-
-        ++format;
+        LOG_ERROR("%s\n.", "Can not allocate memory for new node");
+        exit(1);
     }
-    va_end(factor);
-
-
+        
     return new_node;
 }
 
-struct node * fill_node(struct node * node, uint8_t * format, ...)
+struct node * fill_node(uint8_t * format, ...)
 {
-    if(node == NULL){
-        LOG_ERROR("%s\n.", "Node is null");
-        return NULL;
+    while(current != NULL)
+    {
+        current = current->next;
     }
 
-    /* go to end of nodes */
-    while(node->next != NULL)
-    {
-        node = node->next;
-    }
-    
     union value_node value;
     va_list factor;
     va_start(factor, format);
     while(*format) //read each of symbols in loop
     {
+        current = check_first_node_exist();
+        printf("%s, %p \n", "HELLO", &current);
         switch(*format)
         {
             case 'd': case 'i': //decimal
                value.decimal = va_arg(factor, int32_t);
-               node->next = (struct node *)malloc(sizeof(struct node));
-               node = node->next;
-               node->type = _DECEMAL_ELEM;
-               node->value.decimal = value.decimal;
-               node->next = NULL;
+               current->type = _DECEMAL_ELEM;
+               current->value.decimal = value.decimal;
+               current->next = NULL;
                break;
             case 'r': case 'f': //real
                value.real = va_arg(factor, double);
-               node->next = (struct node *)malloc(sizeof(struct node));
-               node = node->next;
-               node->type = _REAL_ELEM;
-               node->value.real = value.real;
-               node->next = NULL;
+               current->type = _REAL_ELEM;
+               current->value.real = value.real;
+               current->next = NULL;
                break;
             case 's':           //string
                value.string = va_arg(factor, uint8_t *);
-               node->next = (struct node *)malloc(sizeof(struct node));
-               node = node->next;
-               node->type = _STRING_ELEM;
-               node->value.string = value.string;
-               node->next = NULL;
+               current->type = _STRING_ELEM;
+               current->value.string = value.string;
+               current->next = NULL;
               break; 
         }
-
         ++format;
     }
     va_end(factor);
 
-    return node;
+    return current;
 }
 
-struct node * delete_node(struct node * node)
+void delete_last_node(void)
 {
-    if(node == NULL){
-        LOG_ERROR("%s\n.", "Node is null");
-        return NULL;
+    if(first == NULL){
+        LOG_ERROR("%s\n.", "First node does not exist");
+        exit(2);
     }
 
-    if(node->next == NULL)
-        return node;
-
-    struct node * prev_node = node;
-    struct node * past_node = node->next;
-
-    while(past_node->next != NULL)
+    current = first;
+    while(current != NULL)
     {
-        prev_node = past_node;
-        past_node = past_node->next;
+        current = current->next;
     }
-    prev_node->next = NULL;
 
-    return past_node;
+    free(current);
 } 
 
-void print_node(struct node * node)
+void print_all_nodes(void)
 {
-    printf("[ ");
+    current = first;
     
-    while(node != NULL)
+    printf("[ ");
+    while(current != NULL)
     {
-        switch(node->type){
+        switch(current->type){
             case _DECEMAL_ELEM:
-                printf("%d ", node->value.decimal);
+                printf("%d ", current->value.decimal);
                 break;
             case _REAL_ELEM:
-                printf("%lf ", node->value.real);
+                printf("%lf ", current->value.real);
                 break;
             case _STRING_ELEM:
-                printf("'%s' ", node->value.string);
+                printf("'%s' ", current->value.string);
                 break;
         }
-        node = node->next;
+        current = current->next;
     }
     printf("]\n");
 }
 
-void free_all_nodes(struct node * node)
+struct node * check_first_node_exist(void)
 {
-    struct node *node_ptr = NULL;
-
-    while(node != NULL)
+    if(first == NULL)
     {
-        node_ptr = node->next;
-        free(node);
-        node = node_ptr;
+        first = create_node();
+        current = first;
+    }
+    else
+    {
+        new_node = create_node();
+        current = new_node;
+    }
+
+    return current;
+}
+
+void free_all_nodes(void)
+{
+    struct node * next_node = NULL;
+    current = first;
+
+    while(current != NULL)
+    {
+        next_node = current->next;
+        free(next_node);
+        current = next_node;
     }
 }
 
