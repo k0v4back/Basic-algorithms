@@ -1,44 +1,72 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int * merge(int * arr_a, int len_arr_a, int * arr_b, int len_arr_b);
+void merge(int * arr, int left, int middle, int right);
+void merge_sort(int * arr, int left, int right);
 
 int main(void)
 {
+    int arr[] = { 12, 11, 13, 5, 6, 7 };
+    int arr_size = sizeof(arr) / sizeof(arr[0]);
+    
+    merge_sort(arr, 0, arr_size - 1);
+
+    for(int i = 0; i < 6; i++)
+        printf("%d\n", arr[i]);
+
     return 0;
 }
 
-int * merge(int * arr_a, int len_arr_a, int * arr_b, int len_arr_b)
+
+void merge(int * arr, int left, int middle, int right)
 {
-    int * arr_c; 
-    arr_c = (int *)malloc(len_arr_a + len_arr_b);
+    /* parts of arrays */
+    int left_part = left;
+    int right_part = middle + 1;
+    int part_res_arr = left;
 
-    int index_a, index_b, index_c = 0; 
+    int res_arr[6];
 
-    while(index_a < len_arr_a || index_b < len_arr_b){
-        if(arr_a[index_a] >= arr_b[index_b]){
-            arr_c[index_c] = arr_a[index_a];
-            index_a++;
-            index_c++;
+    printf("%d, %d, %d, %d\n", left_part, middle, right_part, right); 
+    while(left_part < middle && right_part < right){
+        if(arr[left_part] >= arr[right_part]){
+            res_arr[part_res_arr] = arr[left_part];
+            part_res_arr++;
+            left_part++;
         }
         else{
-            arr_c[index_c] = arr_b[index_b];
-            index_b++;
-            index_c++;
+            res_arr[part_res_arr] = arr[right_part];
+            part_res_arr++;
+            right_part++;
         }
     }
 
-    while(index_a < len_arr_a){
-        arr_c[index_c] = arr_a[index_a];
-        index_c++;
-        index_a++;
+    if(left_part > middle){
+        while(right_part < right){
+            res_arr[part_res_arr] = arr[right_part];
+            part_res_arr++;
+            right_part++;
+        }
+    }else{
+        while(left_part <= middle){
+            res_arr[part_res_arr] = arr[left_part];
+            part_res_arr++;
+            left_part++;
+        }
     }
 
-    while(index_b < len_arr_b){
-        arr_c[index_c] = arr_b[index_b];
-        index_c++;
-        index_b++;
-    }
+    for(int i = left; i <= right; i++)
+        arr[i] = res_arr[i];
+}
 
-    return arr_c;
+void merge_sort(int * arr, int left, int right)
+{
+    if(left < right){
+        int middle = left + (right - left) / 2;
+        
+        merge_sort(arr, left, middle);
+        merge_sort(arr, middle + 1, right);
+
+        merge(arr, left, middle, right);
+    }
 }
