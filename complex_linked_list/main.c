@@ -16,10 +16,13 @@ struct node
     void * data;
     enum value_type_element type;
     struct node * next;
+    struct node * previous;
 };
 
 struct node * node_create(void * data, enum value_type_element type);
 struct node * fill_node_last(struct node * node, void * data, enum value_type_element type);
+struct node * find_node_by_value(struct node * node, void * data, enum value_type_element type);
+void delete_node(struct node * first_node, struct node * node);
 void delete_all_nodes(struct node * node);
 void print_all_nodes(struct node * node);
 
@@ -41,7 +44,7 @@ int main(int argc, char **argv)
     temp = fill_node_last(node, val_x, _STRING_ELEM);
     print_all_nodes(node);
 
-    delete_all_nodes(node);
+    delete_node(node, find_node_by_value(node, &val_d, _REAL_ELEM)); 
     print_all_nodes(node);
 
     return 0;
@@ -62,6 +65,7 @@ struct node * node_create(void * data, enum value_type_element type)
     tmp_node->data = data;
     tmp_node->type = type;
     tmp_node->next = NULL;
+    tmp_node->previous = NULL;
 
     return tmp_node;
 }
@@ -78,9 +82,47 @@ struct node * fill_node_last(struct node * node, void * data, enum value_type_el
         while(node->next != NULL) // go to the end of the list
             node = node->next;
         node->next = new_node;
+        new_node->previous = node;
     }
 
     return new_node;
+}
+
+/*
+ * Searching for an item in the list by value
+ * Arguments: pointer to a linked list, pointer to data, data type
+ */
+struct node * find_node_by_value(struct node * node, void * data, enum value_type_element type)
+{
+    while(node != NULL){
+        if(node->type == type && node->data == data)
+            break;
+        node = node->next;
+    }    
+
+    return node;
+}
+
+/*
+ * Deleting node of linked list
+ * Arguments: pointer to linked list, pointer to node  which we are looking for
+ */
+void delete_node(struct node * first_node, struct node * node)
+{
+    struct node * tmp_node = first_node;
+
+    if(node == NULL){
+        LOG_ERROR("%s\n.", "Node is null");
+        exit(3);
+    }
+    
+    /* Navigating to the node to delete */
+    while(tmp_node != node){
+        tmp_node = tmp_node->next;
+    }
+
+    node->previous = node->next;
+    free(node);
 }
 
 /*
