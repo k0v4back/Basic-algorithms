@@ -19,7 +19,7 @@ struct node
 };
 
 struct node * node_create(void * data, enum value_type_element type);
-struct node * fill_node(struct node * node, void * data, enum value_type_element type);
+struct node * fill_node_last(struct node * node, void * data, enum value_type_element type);
 void delete_all_nodes(struct node * node);
 void print_all_nodes(struct node * node);
 
@@ -35,11 +35,11 @@ int main(int argc, char **argv)
     struct node * node = node_create(&val_a, _DECEMAL_ELEM);
     struct node * temp = NULL;
     
-    temp = fill_node(node, &val_b, _DECEMAL_ELEM);
-    temp = fill_node(node, &val_c, _REAL_ELEM);
-    temp = fill_node(node, &val_d, _REAL_ELEM);
-    temp = fill_node(node, val_e, _STRING_ELEM);
-    temp = fill_node(node, val_x, _STRING_ELEM);
+    temp = fill_node_last(node, &val_b, _DECEMAL_ELEM);
+    temp = fill_node_last(node, &val_c, _REAL_ELEM);
+    temp = fill_node_last(node, &val_d, _REAL_ELEM);
+    temp = fill_node_last(node, val_e, _STRING_ELEM);
+    temp = fill_node_last(node, val_x, _STRING_ELEM);
     print_all_nodes(node);
 
     delete_all_nodes(node);
@@ -48,6 +48,10 @@ int main(int argc, char **argv)
     return 0;
 }
 
+/*
+ * Creating a new node and inserting it at the end of the linked list
+ * Arguments: data of new element, the data type of the new element
+ */
 struct node * node_create(void * data, enum value_type_element type)
 {
     struct node * tmp_node = NULL;
@@ -63,7 +67,11 @@ struct node * node_create(void * data, enum value_type_element type)
     return tmp_node;
 }
 
-struct node * fill_node(struct node * node, void * data, enum value_type_element type)
+/*
+ * Filling a new node and inserting it at the end of the linked list
+ * Arguments: pointer to linked list, data of new node, the data type of the new element
+ */
+struct node * fill_node_last(struct node * node, void * data, enum value_type_element type)
 {
     struct node * new_node = NULL;
     new_node = node_create(data, type);
@@ -76,6 +84,10 @@ struct node * fill_node(struct node * node, void * data, enum value_type_element
     return new_node;
 }
 
+/*
+ * Deleting all the elements that are in linked list
+ * Argument: pointer to linked list
+ */
 void delete_all_nodes(struct node * node)
 {
     struct node * tmp_node = NULL;
@@ -92,6 +104,10 @@ void delete_all_nodes(struct node * node)
     }
 }
 
+/*
+ * Printing all the elements that are in linked list
+ * Argument: pointer to linked list
+ */
 void print_all_nodes(struct node * node)
 {
     if(node == NULL){
@@ -99,7 +115,7 @@ void print_all_nodes(struct node * node)
         exit(3);
     }
 
-    printf("[ ");
+    printf("[\n");
     while(node != NULL){
         switch(node->type)
         {
@@ -115,5 +131,5 @@ void print_all_nodes(struct node * node)
         }
         node = node->next;
     }
-    printf("]\n");
+    printf("]\n\n");
 }
