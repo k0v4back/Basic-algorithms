@@ -36,7 +36,6 @@ int main(int argc, char **argv)
     struct node * temp = NULL;
     
     temp = fill_node_last(node, &val_b, _DECEMAL_ELEM);
-    temp = fill_node_last(node, &val_c, _REAL_ELEM);
     temp = fill_node_last(node, &val_d, _REAL_ELEM);
     temp = fill_node_last(node, val_e, _STRING_ELEM);
     temp = fill_node_last(node, val_x, _STRING_ELEM);
