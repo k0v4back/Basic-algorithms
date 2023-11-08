@@ -3,10 +3,10 @@
 
 #include "linked_list.h"
 
-struct node * create_node(void)
+struct Node * create_node(int key, int value)
 {
     if (first == NULL) {
-        first = (struct node *)malloc(sizeof(*first));
+        first = (struct Node *)malloc(sizeof(*first));
         if (!first){
             fprintf(stderr, "%s", "No memory allocated");
             exit(1);
@@ -14,13 +14,14 @@ struct node * create_node(void)
 
         first->next = NULL;
         first->previous = NULL;
+        first->key = key;
+        first->value = value;
         current = first;
-        fill_node();
 
         return current;
     }
 
-    new_node = (struct node *)malloc(sizeof(*new_node));
+    new_node = (struct Node *)malloc(sizeof(*new_node));
     if (!new_node){
         fprintf(stderr, "%s", "No memory allocated");
         exit(1);
@@ -28,20 +29,21 @@ struct node * create_node(void)
 
     current->next = new_node;
     new_node->previous = current;
+    new_node->key = key;
+    new_node->value = value;
     current = new_node;
-    fill_node();
 
     return current;
 }
 
-void delete_node(struct node *del_node)
+void delete_node(struct Node *del_node)
 {
     current = first;
 
     while(current != del_node)
         current = current->next;
     
-    printf("main: current->num=%d\n", current->num);
+    printf("main: current->key=%d\n", current->key);
 
     del_node->previous = current->next;
 
@@ -52,7 +54,7 @@ void print_all_nodes(void)
 {
     current = first;
     while(current) {
-        printf("num: %d\n", current->num);
+        printf("key: %d\n", current->key);
         current = current->next;
     }
 }
@@ -65,13 +67,7 @@ void print_all_nodes_reverse(void)
     
     current = current->previous;
     while(current) {
-        printf("num: %d\n", current->num);
+        printf("key: %d\n", current->key);
         current = current->previous;
     }
-}
-
-void fill_node(void)
-{
-    printf("Inter number: ");
-    scanf("%d", &current->num);
 }

@@ -3,19 +3,19 @@
 
 #include <stdio.h>
 
-struct node {
-    struct node *next;
-    struct node *previous;
-    int num;
+struct Node {
+    struct Node *next;
+    struct Node *previous;
+    int key;
+    int value;
 };
 
-struct node *first;
-struct node *current;
-struct node *new_node;
+struct Node *first;
+struct Node *current;
+struct Node *new_node;
 
-struct node * create_node(void);
-void delete_node(struct node *del_node);
-void fill_node(void);
+struct Node * create_node(int key, int value);
+void delete_node(struct Node *del_node);
 void print_all_nodes(void);
 void print_all_nodes_reverse(void);
 
