@@ -109,6 +109,53 @@ void free_hashtab(struct HashTab *ht)
     free(ht);
 }
 
+void set_hashtab(struct HashTab *ht, void *key, void *value)
+{
+    uint32_t hash;
+
+    /* Check type of hash table key */
+    switch (ht->type.key) {
+        case _DECEMAL_ELEM:
+            /* Calculate hash for decimal */
+            hash = (uint32_t)key % ht->size;
+            break;
+        case _STRING_ELEM:
+            /* Calculate hash for decimal */
+            hash = _strhash((uint8_t *)key, ht->size);
+            break;
+    }
+
+    current = ht->node[hash];
+    create_node((int)key, (int)value);
+}
+
+void print_hashtab(struct HashTab *ht)
+{
+    uint32_t hash;
+    int i;
+
+    for (i = 0; i < ht->size; i++) {
+        if (ht->node[i] == NULL)
+            continue;
+        
+        /* Check type of hash table key */
+        switch (ht->type.key) {
+            case _DECEMAL_ELEM:
+                /* Calculate hash for decimal */
+                hash = ht->node[i]->key % ht->size;
+                current = ht->node[hash];
+                break;
+            case _STRING_ELEM:
+                /* Calculate hash for decimal */
+                hash = _strhash(ht->node[i]->key, ht->size);
+                current = ht->node[hash];
+                break;
+        }
+        printf("%d = ", hash);
+        print_all_nodes();
+    }
+}
+
 static uint32_t _strhash(uint8_t *str, size_t size)
 {
     uint32_t hash;
