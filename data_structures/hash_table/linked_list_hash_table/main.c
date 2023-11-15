@@ -40,6 +40,12 @@ static uint32_t _strhash(uint8_t *str, size_t size);
 
 int main(void)
 {
+    struct HashTab *hashtab = new_hashtab(1, _DECEMAL_ELEM, _DECEMAL_ELEM);
+
+    set_hashtab(hashtab, (void *)4, (void *)777);
+    print_hashtab(hashtab);
+
+    free_hashtab(hashtab);
     return 0;
 }
 
@@ -72,22 +78,24 @@ struct HashTab *new_hashtab(size_t size, enum value_type_element key_type, enum 
     }
     
     /* Create hash table */
-    struct HashTab *hash_tab = (struct HashTab *)malloc(sizeof(*hash_tab));
+    struct HashTab *hash_tab = (struct HashTab *)malloc(sizeof(struct HashTab));
     if (!hash_tab) {
         fprintf(stderr, "%s", "Cann't allocate memory for HashTab");
         exit(1);
     }
 
     /* Allocate memory for each node in linked list */
-    hash_tab->node = (struct Node **)malloc(size * sizeof(**hash_tab->node));
-    if (!hash_tab) {
+    hash_tab->node = (struct Node **)malloc(size * sizeof(struct Node));
+    if (!hash_tab->node) {
         fprintf(stderr, "%s", "Cann't allocate memory for linked list node");
         exit(1);
     }
 
     /* Create first node for all elements inside hash table */
-    for (i = 0; i < size; i++)
-        *(hash_tab->node + i) = create_node(key_type, value_type);
+    for (i = 0; i < size; i++) {
+        first = NULL;
+        hash_tab->node[i] = create_node((int)key_type, (int)value_type);
+    }
     
     hash_tab->size = size;
     hash_tab->type.key = key_type;
@@ -125,8 +133,7 @@ void set_hashtab(struct HashTab *ht, void *key, void *value)
             break;
     }
 
-    current = ht->node[hash];
-    create_node((int)key, (int)value);
+    set_node(ht->node[hash], (int)key, (int)value);
 }
 
 void print_hashtab(struct HashTab *ht)
@@ -135,8 +142,10 @@ void print_hashtab(struct HashTab *ht)
     int i;
 
     for (i = 0; i < ht->size; i++) {
-        if (ht->node[i] == NULL)
+        /*
+        if (ht->node[i]->next == NULL && ht->node[i]->previous == NULL)
             continue;
+        */
         
         /* Check type of hash table key */
         switch (ht->type.key) {
@@ -151,8 +160,10 @@ void print_hashtab(struct HashTab *ht)
                 current = ht->node[hash];
                 break;
         }
+        printf("[ ");
         printf("%d = ", hash);
         print_all_nodes();
+        printf(" ]\n");
     }
 }
 

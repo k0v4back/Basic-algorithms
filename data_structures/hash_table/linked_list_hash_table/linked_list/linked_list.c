@@ -36,14 +36,18 @@ struct Node * create_node(int key, int value)
     return current;
 }
 
+void set_node(struct Node *node, int key, int value)
+{
+    node->key = key;
+    node->value = value;
+}
+
 void delete_node(struct Node *del_node)
 {
     current = first;
 
-    while(current != del_node)
+    while(current->key != del_node->key)
         current = current->next;
-    
-    printf("main: current->key=%d\n", current->key);
 
     del_node->previous = current->next;
 
@@ -54,7 +58,7 @@ void print_all_nodes(void)
 {
     current = first;
     while(current) {
-        printf("key: %d\n", current->key);
+        printf("key: %d, value: %d", current->key, current->value);
         current = current->next;
     }
 }
