@@ -4,17 +4,10 @@
 
 #include "linked_list/linked_list.h"
 
-enum value_type_element
-{
-    _DECEMAL_ELEM,
-    _REAL_ELEM,
-    _STRING_ELEM,
-};
-
 union value_hashtable_t {
     int64_t decimal;
     double real;
-    uint8_t *string;
+    uint8_t* string;
 };
 
 struct HashTab {
@@ -23,33 +16,35 @@ struct HashTab {
         enum value_type_element value;
     } type;
     size_t size; /* Count of elements in hash table */
-    struct Node **node; /* Array of pointers to linked list */
+    struct Node** pp_node; /* Array of pointers to linked list */
 };
 
-struct HashTab *new_hashtab(size_t size, enum value_type_element key, enum value_type_element value);
-void free_hashtab(struct HashTab *ht);
+struct HashTab* new_hashtab(size_t size, enum value_type_element key, enum value_type_element value);
+void free_hashtab(struct HashTab* ht);
 
-union value_hashtable_t get_hashtab(struct HashTab *ht, void *key);
-void set_hashtab(struct HashTab *ht, void *key, void *value);
-void del_hashtab(struct HashTab *ht, void *key);
-_Bool in_hashtab(struct HashTab *ht, void *key);
+union value_hashtable_t get_hashtab(struct HashTab* ht, void* key);
+void set_hashtab(struct HashTab* ht, void* key, void* value);
+void del_hashtab(struct HashTab* ht, void* key);
+_Bool in_hashtab(struct HashTab* ht, void* key);
 
-void print_hashtab(struct HashTab *ht);
+void print_hashtab(struct HashTab* ht);
 
-static uint32_t _strhash(uint8_t *str, size_t size);
+static uint32_t _strhash(uint8_t* str, size_t size);
 
 int main(void)
 {
-    struct HashTab *hashtab = new_hashtab(1, _DECEMAL_ELEM, _DECEMAL_ELEM);
+    struct HashTab* hashtab = new_hashtab(1, _DECEMAL_ELEM, _DECEMAL_ELEM);
 
-    set_hashtab(hashtab, (void *)4, (void *)777);
+    set_hashtab(hashtab, (void*)4, (void*)777);
+    set_hashtab(hashtab, (void*)1, (void*)2);
     print_hashtab(hashtab);
 
-    free_hashtab(hashtab);
+    //free_hashtab(hashtab);
+
     return 0;
 }
 
-struct HashTab *new_hashtab(size_t size, enum value_type_element key_type, enum value_type_element value_type)
+struct HashTab* new_hashtab(size_t size, enum value_type_element key_type, enum value_type_element value_type)
 {
     int i;
 
@@ -78,46 +73,44 @@ struct HashTab *new_hashtab(size_t size, enum value_type_element key_type, enum 
     }
     
     /* Create hash table */
-    struct HashTab *hash_tab = (struct HashTab *)malloc(sizeof(struct HashTab));
-    if (!hash_tab) {
+    struct HashTab* ht = (struct HashTab*)malloc(sizeof(struct HashTab));
+    if (!ht) {
         fprintf(stderr, "%s", "Cann't allocate memory for HashTab");
         exit(1);
     }
 
     /* Allocate memory for each node in linked list */
-    hash_tab->node = (struct Node **)malloc(size * sizeof(struct Node));
-    if (!hash_tab->node) {
+    ht->pp_node = (struct Node**)malloc(size * sizeof(struct Node));
+    if (!ht->pp_node) {
         fprintf(stderr, "%s", "Cann't allocate memory for linked list node");
         exit(1);
     }
 
     /* Create first node for all elements inside hash table */
-    for (i = 0; i < size; i++) {
-        first = NULL;
-        hash_tab->node[i] = create_node((int)key_type, (int)value_type);
-    }
+    for (i = 0; i < size; i++)
+        ht->pp_node[i] = create_node((int)key_type, (int)value_type);
     
-    hash_tab->size = size;
-    hash_tab->type.key = key_type;
-    hash_tab->type.value = value_type;
+    ht->size = size;
+    ht->type.key = key_type;
+    ht->type.value = value_type;
 
-    return hash_tab;
+    return ht;
 }
 
-void free_hashtab(struct HashTab *ht)
+void free_hashtab(struct HashTab* ht)
 {
     int i;
 
     /* Free memory of linked list nodes */
     for (i = 0; i < ht->size; i++)
-        delete_node(ht->node[i]);
+        delete_node(ht->pp_node[i], ht->pp_node[i]);
     
     /* Free memory of HashTab */
-    free(ht->node);
+    free(ht->pp_node);
     free(ht);
 }
 
-void set_hashtab(struct HashTab *ht, void *key, void *value)
+void set_hashtab(struct HashTab* ht, void* key, void* value)
 {
     uint32_t hash;
 
@@ -129,14 +122,14 @@ void set_hashtab(struct HashTab *ht, void *key, void *value)
             break;
         case _STRING_ELEM:
             /* Calculate hash for decimal */
-            hash = _strhash((uint8_t *)key, ht->size);
+            hash = _strhash((uint8_t*)key, ht->size);
             break;
     }
 
-    set_node(ht->node[hash], (int)key, (int)value);
+    fill_last_node(ht->pp_node[hash], (int)key, (int)value);
 }
 
-void print_hashtab(struct HashTab *ht)
+void print_hashtab(struct HashTab* ht)
 {
     uint32_t hash;
     int i;
@@ -151,23 +144,21 @@ void print_hashtab(struct HashTab *ht)
         switch (ht->type.key) {
             case _DECEMAL_ELEM:
                 /* Calculate hash for decimal */
-                hash = ht->node[i]->key % ht->size;
-                current = ht->node[hash];
+                hash = ht->pp_node[i]->key % ht->size;
                 break;
             case _STRING_ELEM:
                 /* Calculate hash for decimal */
-                hash = _strhash(ht->node[i]->key, ht->size);
-                current = ht->node[hash];
+                hash = _strhash((uint8_t*)ht->pp_node[i]->key, ht->size);
                 break;
         }
         printf("[ ");
-        printf("%d = ", hash);
-        print_all_nodes();
+        printf("hash = %d ", hash);
+        print_all_nodes(ht->pp_node[hash]);
         printf(" ]\n");
     }
 }
 
-static uint32_t _strhash(uint8_t *str, size_t size)
+static uint32_t _strhash(uint8_t* str, size_t size)
 {
     uint32_t hash;
 

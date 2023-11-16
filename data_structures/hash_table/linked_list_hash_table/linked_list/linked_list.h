@@ -3,22 +3,24 @@
 
 #include <stdio.h>
 
-struct Node {
-    struct Node *next;
-    struct Node *previous;
-    int key;
-    int value;
+enum value_type_element
+{
+    _DECEMAL_ELEM,
+    _REAL_ELEM,
+    _STRING_ELEM,
 };
 
-struct Node *first;
-struct Node *current;
-struct Node *new_node;
+struct Node {
+    struct Node* next;
+    struct Node* previous;
+    enum value_type_element key;
+    enum value_type_element value;
+};
 
-struct Node * create_node(int key, int value);
-void set_node(struct Node * node, int key, int value);
-void delete_node(struct Node *del_node);
-void set_end_list(void);
-void print_all_nodes(void);
-void print_all_nodes_reverse(void);
+struct Node* create_node(enum value_type_element key, enum value_type_element value);
+void fill_last_node(struct Node* node, enum value_type_element key, enum value_type_element value);
+void delete_node(struct Node* first_node, struct Node* del_node);
+void delete_all_node(struct Node* node);
+void print_all_nodes(struct Node* node);
 
 #endif /* _LINKED_LIST_H_ */

@@ -3,80 +3,78 @@
 
 #include "linked_list.h"
 
-struct Node * create_node(int key, int value)
+struct Node* create_node(enum value_type_element key, enum value_type_element value)
 {
-    if (first == NULL) {
-        first = (struct Node *)malloc(sizeof(struct Node));
-        if (!first){
-            fprintf(stderr, "%s", "No memory allocated");
-            exit(1);
-        }
+    struct Node* tmp_node = NULL;
 
-        first->next = NULL;
-        first->previous = NULL;
-        first->key = key;
-        first->value = value;
-        current = first;
-
-        return current;
-    }
-
-    new_node = (struct Node *)malloc(sizeof(struct Node));
-    if (!new_node){
+    tmp_node = (struct Node*)malloc(sizeof(struct Node));
+    if (!tmp_node){
         fprintf(stderr, "%s", "No memory allocated");
         exit(1);
     }
 
-    current->next = new_node;
-    new_node->previous = current;
-    new_node->key = key;
-    new_node->value = value;
-    current = new_node;
+    tmp_node->key = key;
+    tmp_node->value = value;
+    tmp_node->next = NULL;
+    tmp_node->previous = NULL;
 
-    return current;
+    return tmp_node;
 }
 
-void set_node(struct Node *node, int key, int value)
+void fill_last_node(struct Node* node, enum value_type_element key, enum value_type_element value)
 {
-    node->key = key;
-    node->value = value;
+    struct Node* new_node = NULL;
+
+    new_node = create_node(key, value);
+    while (node->next)
+        node = node->next;
+    node->next= new_node;
+    new_node->previous = node;
+
+    return new_node;
 }
 
-void delete_node(struct Node *del_node)
+void delete_node(struct Node* first_node, struct Node* del_node)
 {
-    current = first;
+    struct Node* tmp_node = first_node;
 
-    while(current->key != del_node->key)
-        current = current->next;
+    if(!del_node){
+        fprintf(stderr, "%s", "Delete node is null");
+        exit(1);
+    }
 
-    del_node->previous = current->next;
-
+    while(tmp_node != del_node)
+        tmp_node = tmp_node->next;
+    
+    del_node->previous = del_node->next;
     free(del_node);
 }
 
-void set_end_list(void)
+void delete_all_node(struct Node* node)
 {
-    current = first;
-    while(current)
-        current = current->next;
-}
+    struct Node* tmp_node = NULL;
 
-void print_all_nodes(void)
-{
-    current = first;
-    while(current) {
-        printf("key: %d, value: %d", current->key, current->value);
-        current = current->next;
+    if(!node){
+        fprintf(stderr, "%s", "Node is null");
+        exit(1);
+    }
+
+    while(node) {
+        tmp_node = node->next;
+        free(node);
+        node = node->next;
     }
 }
 
-void print_all_nodes_reverse(void)
+void print_all_nodes(struct Node* node)
 {
-    set_end_list();
-    
-    current = current->previous;
-    while(current) {
-        printf("key: %d, value: %d", current->key, current->value);
-        current = current->previous;
+    if(!node){
+        fprintf(stderr, "%s", "Node is null");
+        exit(1);
+    }
+
+    while(node) {
+        printf("key: %d, value: %d", node->key, node->value);
+        node = node->next;
     }
 }
