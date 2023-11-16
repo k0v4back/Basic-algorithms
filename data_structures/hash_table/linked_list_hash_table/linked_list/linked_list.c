@@ -6,7 +6,7 @@
 struct Node * create_node(int key, int value)
 {
     if (first == NULL) {
-        first = (struct Node *)malloc(sizeof(*first));
+        first = (struct Node *)malloc(sizeof(struct Node));
         if (!first){
             fprintf(stderr, "%s", "No memory allocated");
             exit(1);
@@ -21,7 +21,7 @@ struct Node * create_node(int key, int value)
         return current;
     }
 
-    new_node = (struct Node *)malloc(sizeof(*new_node));
+    new_node = (struct Node *)malloc(sizeof(struct Node));
     if (!new_node){
         fprintf(stderr, "%s", "No memory allocated");
         exit(1);
@@ -54,6 +54,13 @@ void delete_node(struct Node *del_node)
     free(del_node);
 }
 
+void set_end_list(void)
+{
+    current = first;
+    while(current)
+        current = current->next;
+}
+
 void print_all_nodes(void)
 {
     current = first;
@@ -65,13 +72,11 @@ void print_all_nodes(void)
 
 void print_all_nodes_reverse(void)
 {
-    current = first;
-    while(current->next)
-        current = current->next;
+    set_end_list();
     
     current = current->previous;
     while(current) {
-        printf("key: %d\n", current->key);
+        printf("key: %d, value: %d", current->key, current->value);
         current = current->previous;
     }
 }

@@ -17,6 +17,7 @@ struct Node *new_node;
 struct Node * create_node(int key, int value);
 void set_node(struct Node * node, int key, int value);
 void delete_node(struct Node *del_node);
+void set_end_list(void);
 void print_all_nodes(void);
 void print_all_nodes_reverse(void);
 
