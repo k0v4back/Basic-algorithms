@@ -33,13 +33,17 @@ static uint32_t _strhash(uint8_t* str, size_t size);
 
 int main(void)
 {
-    struct HashTab* hashtab = new_hashtab(1, _DECEMAL_ELEM, _DECEMAL_ELEM);
+    struct HashTab* hashtab = new_hashtab(6, _DECEMAL_ELEM, _DECEMAL_ELEM);
 
-    set_hashtab(hashtab, (void*)4, (void*)777);
-    set_hashtab(hashtab, (void*)1, (void*)2);
+    set_hashtab(hashtab, 1, (void*)555);
+    set_hashtab(hashtab, 1, (void*)666);
+    set_hashtab(hashtab, 1, (void*)777);
+    set_hashtab(hashtab, 2, (void*)888);
+    set_hashtab(hashtab, 3, (void*)999);
+    set_hashtab(hashtab, 4, (void*)999);
     print_hashtab(hashtab);
 
-    //free_hashtab(hashtab);
+    free_hashtab(hashtab);
 
     return 0;
 }
@@ -135,10 +139,10 @@ void print_hashtab(struct HashTab* ht)
     int i;
 
     for (i = 0; i < ht->size; i++) {
-        /*
-        if (ht->node[i]->next == NULL && ht->node[i]->previous == NULL)
+        //if (ht->pp_node[i]->next == NULL && ht->pp_node[i]->previous == NULL)
+            //continue;
+        if (i == 0)
             continue;
-        */
         
         /* Check type of hash table key */
         switch (ht->type.key) {
@@ -151,10 +155,9 @@ void print_hashtab(struct HashTab* ht)
                 hash = _strhash((uint8_t*)ht->pp_node[i]->key, ht->size);
                 break;
         }
-        printf("[ ");
-        printf("hash = %d ", hash);
+        printf("{ ");
         print_all_nodes(ht->pp_node[hash]);
-        printf(" ]\n");
+        printf(" }\n");
     }
 }
 

@@ -25,13 +25,22 @@ void fill_last_node(struct Node* node, enum value_type_element key, enum value_t
 {
     struct Node* new_node = NULL;
 
+    if (node->previous == NULL && node->next == NULL) {
+        new_node = create_node(key, value);
+        node->next= new_node;
+        new_node->previous = node;
+
+        node->key = key;
+        node->value = value;
+
+        return;
+    }
+
     new_node = create_node(key, value);
     while (node->next)
         node = node->next;
     node->next= new_node;
     new_node->previous = node;
-
-    return new_node;
 }
 
 void delete_node(struct Node* first_node, struct Node* del_node)
@@ -74,7 +83,7 @@ void print_all_nodes(struct Node* node)
     }
 
     while(node) {
-        printf("key: %d, value: %d", node->key, node->value);
+        printf("[key:%d, value:%d], ", node->key, node->value);
         node = node->next;
     }
 }
