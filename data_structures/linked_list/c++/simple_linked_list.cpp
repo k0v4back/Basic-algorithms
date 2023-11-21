@@ -8,6 +8,10 @@ public:
     ~List();
 
     void push_back(T data);
+    void push_front(T data);
+    void pop_front(void);
+    void insert(T data, int index);
+    void clear(void);
     void print_nodes(void);
     T& operator[](const int index);
 
@@ -35,7 +39,7 @@ template<typename T> List<T>::List() {
 }
 
 template<typename T> List<T>::~List() {
-
+    clear();
 }
 
 template<typename T> void List<T>::push_back(T data) {
@@ -51,6 +55,46 @@ template<typename T> void List<T>::push_back(T data) {
     }
 
     list_size++;
+}
+
+template<typename T> void List<T>::push_front(T data) {
+    Node<T>* current = first;
+
+    first = new Node<T>(data);
+    first->next = current;
+
+    list_size++;
+}
+
+template<typename T> void List<T>::pop_front(void) {
+    Node<T>* current = first;
+
+    first = first->next;
+    delete current;
+
+    list_size--;
+}
+
+template<typename T> void List<T>::insert(T data, int index) {
+    //Node<T>* new_node = new Node<T>(data);
+    Node<T>* current = first;
+    Node<T>* new_node = nullptr;
+
+    if (index == 0)
+        push_front(data);
+
+    for (int i = 0; i < index - 1; i++) {
+        current = current->next;
+    }
+
+    new_node = new Node<T>(data, current->next);
+    current->next = new_node;
+    list_size++;
+}
+
+template<typename T> void List<T>::clear(void) {
+    while (list_size)
+        pop_front();
 }
 
 template<typename T> void List<T>::print_nodes(void) {
@@ -88,7 +132,14 @@ int main(void) {
 
     cout << list[1] << endl;
     cout << "----------------------" << endl;
+    list.push_front(0);
+    list.push_front(-1);
+    list.insert(9, 2);
     list.print_nodes();
+
+    cout << "Count of elements: " << list.GetListSize() << endl;
+    list.clear();
+    cout << "Count of elements: " << list.GetListSize() << endl;
 
     return 0;
 }
