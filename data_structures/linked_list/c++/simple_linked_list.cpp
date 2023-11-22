@@ -9,8 +9,10 @@ public:
 
     void push_back(T data);
     void push_front(T data);
+    void pop_back(void);
     void pop_front(void);
     void insert(T data, int index);
+    void remove_at(int index);
     void clear(void);
     void print_nodes(void);
     T& operator[](const int index);
@@ -43,7 +45,7 @@ template<typename T> List<T>::~List() {
 }
 
 template<typename T> void List<T>::push_back(T data) {
-    if (first == nullptr) {
+    if (!first) {
         first = new Node<T>(data);
     } else {
         Node<T>* current = first;
@@ -66,6 +68,21 @@ template<typename T> void List<T>::push_front(T data) {
     list_size++;
 }
 
+template<typename T> void List<T>::pop_back(void) {
+    Node<T>* current = first;
+    Node<T>* deleteNode = nullptr;
+
+    for (int i = 0; i < list_size - 2; i++) {
+        current = current->next;
+    }
+
+    deleteNode = current->next;
+    current->next = deleteNode->next;
+    delete deleteNode;
+
+    list_size--;
+}
+
 template<typename T> void List<T>::pop_front(void) {
     Node<T>* current = first;
 
@@ -76,7 +93,6 @@ template<typename T> void List<T>::pop_front(void) {
 }
 
 template<typename T> void List<T>::insert(T data, int index) {
-    //Node<T>* new_node = new Node<T>(data);
     Node<T>* current = first;
     Node<T>* new_node = nullptr;
 
@@ -90,6 +106,25 @@ template<typename T> void List<T>::insert(T data, int index) {
     new_node = new Node<T>(data, current->next);
     current->next = new_node;
     list_size++;
+}
+
+template<typename T> void List<T>::remove_at(int index) {
+    Node<T>* current = first;
+    Node<T>* deleteNode = nullptr;
+
+    if (index == 0) {
+        pop_front();
+    } else {
+        for (int i = 0; i < index - 1; i++) {
+            current = current->next;
+        }
+
+        deleteNode = current->next;
+        current->next = deleteNode->next;
+
+        delete deleteNode;
+        list_size--;
+    }
 }
 
 template<typename T> void List<T>::clear(void) {
@@ -136,10 +171,11 @@ int main(void) {
     list.push_front(-1);
     list.insert(9, 2);
     list.print_nodes();
-
     cout << "Count of elements: " << list.GetListSize() << endl;
-    list.clear();
+    list.pop_back();
+    list.pop_back();
     cout << "Count of elements: " << list.GetListSize() << endl;
+    list.print_nodes();
 
     return 0;
 }
