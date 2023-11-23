@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "linked_list.h"
 
@@ -84,6 +85,44 @@ void print_all_nodes(struct Node* node)
 
     while(node) {
         printf("[key:%d, value:%d], ", node->key, node->value);
+        node = node->next;
+    }
+}
+
+_Bool in_list(struct Node* node, enum value_type_element key)
+{
+    if(!node){
+        fprintf(stderr, "%s", "Node is null");
+        exit(1);
+    }
+
+    if(!key){
+        fprintf(stderr, "%s", "Node is null");
+        exit(1);
+    }
+
+    while(node) {
+        if (key == node->key)
+            return true;
+        node = node->next;
+    }
+}
+
+void* get_node(struct Node* node, enum value_type_element key)
+{
+    if(!node){
+        fprintf(stderr, "%s", "Node is null");
+        exit(1);
+    }
+
+    if(!key){
+        fprintf(stderr, "%s", "Node is null");
+        exit(1);
+    }
+
+    while(node) {
+        if (key == node->key)
+            return (void *)node->value;
         node = node->next;
     }
 }

@@ -1,14 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "linked_list/linked_list.h"
-
-union value_hashtable_t {
-    int64_t decimal;
-    double real;
-    uint8_t* string;
-};
 
 struct HashTab {
     struct {
@@ -22,7 +17,7 @@ struct HashTab {
 struct HashTab* new_hashtab(size_t size, enum value_type_element key, enum value_type_element value);
 void free_hashtab(struct HashTab* ht);
 
-union value_hashtable_t get_hashtab(struct HashTab* ht, void* key);
+void* get_hashtab(struct HashTab* ht, void* key);
 void set_hashtab(struct HashTab* ht, void* key, void* value);
 void del_hashtab(struct HashTab* ht, void* key);
 _Bool in_hashtab(struct HashTab* ht, void* key);
@@ -42,6 +37,13 @@ int main(void)
     set_hashtab(hashtab, 3, (void*)999);
     set_hashtab(hashtab, 4, (void*)999);
     print_hashtab(hashtab);
+
+    if (in_hashtab(hashtab, 4) == true)
+        printf("TRUE\n");
+    else
+        printf("FALSE\n");
+    
+    printf("%d\n", get_hashtab(hashtab, 1));
 
     free_hashtab(hashtab);
 
@@ -114,7 +116,7 @@ void free_hashtab(struct HashTab* ht)
     free(ht);
 }
 
-void set_hashtab(struct HashTab* ht, void* key, void* value)
+void* get_hashtab(struct HashTab* ht, void* key)
 {
     uint32_t hash;
 
@@ -130,7 +132,46 @@ void set_hashtab(struct HashTab* ht, void* key, void* value)
             break;
     }
 
+    return get_node(ht->pp_node[hash], hash);
+}
+
+void set_hashtab(struct HashTab* ht, void* key, void* value)
+{
+    uint32_t hash;
+
+    /* Check type of hash table key */
+    switch (ht->type.key) {
+        case _DECEMAL_ELEM:
+            /* Calculate hash for decimal */
+            hash = (uint32_t)key % ht->size;
+            printf("hash=%d\n", hash);
+            break;
+        case _STRING_ELEM:
+            /* Calculate hash for decimal */
+            hash = _strhash((uint8_t*)key, ht->size);
+            break;
+    }
+
     fill_last_node(ht->pp_node[hash], (int)key, (int)value);
+}
+
+_Bool in_hashtab(struct HashTab* ht, void* key)
+{
+    uint32_t hash;
+
+    /* Check type of hash table key */
+    switch (ht->type.key) {
+        case _DECEMAL_ELEM:
+            /* Calculate hash for decimal */
+            hash = (uint32_t)key % ht->size;
+            break;
+        case _STRING_ELEM:
+            /* Calculate hash for decimal */
+            hash = _strhash((uint8_t*)key, ht->size);
+            break;
+    }
+
+    return in_list(ht->pp_node[hash], hash);
 }
 
 void print_hashtab(struct HashTab* ht)
