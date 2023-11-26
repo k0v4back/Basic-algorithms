@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "linked_list.h"
 
@@ -17,6 +18,16 @@ struct Node* create_node(enum value_type_element key_type, enum value_type_eleme
 
     tmp_node->type.key = key_type;
     tmp_node->type.value = value_type;
+
+    switch (tmp_node->type.key) {
+        case _DECEMAL_ELEM:
+            tmp_node->data.key.decimal = 0;
+            break;
+        case _STRING_ELEM:
+            tmp_node->data.key.string = "0";
+            break;
+    }
+
     tmp_node->next = NULL;
     tmp_node->previous = NULL;
 
@@ -30,7 +41,7 @@ void fill_last_node(struct Node* node, void* key, void* value)
     new_node = create_node(node->type.key, node->type.value);
 
     if (node->previous == NULL && node->next == NULL) {
-        node->next= new_node;
+        node->next = new_node;
         new_node->previous = node;
     } else {
         while (node->next)
@@ -64,9 +75,6 @@ void fill_last_node(struct Node* node, void* key, void* value)
             fprintf(stderr, "%s", "Value type doesn't exist");
             exit(1);
     }
-
-    //printf("value = %d\n", new_node->data.value);
-    //printf("key = %d\n", new_node->data.key);
 }
 
 void delete_node(struct Node* first_node, struct Node* del_node)
@@ -131,40 +139,32 @@ void print_all_nodes(struct Node* node)
     }
 }
 
-_Bool in_list(struct Node* node, enum value_type_element key)
+_Bool in_list(struct Node* node, void* key)
 {
-    if(!node){
-        fprintf(stderr, "%s", "Node is null");
-        exit(1);
-    }
-
-    if(!key){
-        fprintf(stderr, "%s", "Node is null");
-        exit(1);
-    }
-
-    while(node) {
-        if (key == node->type.key)
-            return true;
-        node = node->next;
-    }
+    return get_node(node, node->type.key, key) != NULL;
 }
 
-void* get_node(struct Node* node, enum value_type_element key)
+struct Node* get_node(struct Node* node, enum value_type_element key_type, void* key_value)
 {
     if(!node){
         fprintf(stderr, "%s", "Node is null");
         exit(1);
     }
 
-    if(!key){
-        fprintf(stderr, "%s", "Node is null");
-        exit(1);
-    }
-
     while(node) {
-        if (key == node->type.key)
-            return (void *)node->type.value;
+        switch (node->type.key) {
+            case _DECEMAL_ELEM:
+                if (key_type == node->type.key && (uint64_t)key_value == node->data.key.decimal)
+                    return node;
+                break;
+            case _STRING_ELEM:
+                if (key_type == node->type.key && strcmp(key_value, node->data.key.string) == 0)
+                    return node;
+                break;
+        }
+
         node = node->next;
     }
+
+    return NULL;
 }

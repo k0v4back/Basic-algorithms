@@ -34,7 +34,7 @@ void fill_last_node(struct Node* node, void* key, void* value);
 void delete_node(struct Node* first_node, struct Node* del_node);
 void delete_all_node(struct Node* node);
 void print_all_nodes(struct Node* node);
-_Bool in_list(struct Node* node, enum value_type_element key);
-void* get_node(struct Node* node, enum value_type_element key);
+_Bool in_list(struct Node* node, void* key);
+struct Node* get_node(struct Node* node, enum value_type_element key_type, void* key_value);
 
 #endif /* _LINKED_LIST_H_ */

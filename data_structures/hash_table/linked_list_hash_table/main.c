@@ -17,7 +17,7 @@ struct HashTab {
 struct HashTab* new_hashtab(size_t size, enum value_type_element key, enum value_type_element value);
 void free_hashtab(struct HashTab* ht);
 
-void* get_hashtab(struct HashTab* ht, void* key);
+struct Node* get_hashtab(struct HashTab* ht, void* key_value);
 void set_hashtab(struct HashTab* ht, void* key, void* value);
 void del_hashtab(struct HashTab* ht, void* key);
 _Bool in_hashtab(struct HashTab* ht, void* key);
@@ -37,21 +37,14 @@ int main(void)
     set_hashtab(hashtab, (void*)"C", (void*)555);
     print_hashtab(hashtab);
 
-    /*
-    set_hashtab(hashtab, 1, (void*)666);
-    set_hashtab(hashtab, 1, (void*)777);
-    set_hashtab(hashtab, 2, (void*)888);
-    set_hashtab(hashtab, 3, (void*)999);
-    set_hashtab(hashtab, 4, (void*)999);
-    print_hashtab(hashtab);
 
-    if (in_hashtab(hashtab, 4) == true)
+    if (in_hashtab(hashtab, "A") == true)
         printf("TRUE\n");
     else
         printf("FALSE\n");
-    
-    printf("%d\n", get_hashtab(hashtab, 1));
-    */
+
+    printf("%ld\n", get_hashtab(hashtab, "C")->data.value.decimal);
+
 
     free_hashtab(hashtab);
 
@@ -124,7 +117,7 @@ void free_hashtab(struct HashTab* ht)
     free(ht);
 }
 
-void* get_hashtab(struct HashTab* ht, void* key)
+struct Node* get_hashtab(struct HashTab* ht, void* key_value)
 {
     uint32_t hash;
 
@@ -132,15 +125,15 @@ void* get_hashtab(struct HashTab* ht, void* key)
     switch (ht->type.key) {
         case _DECEMAL_ELEM:
             /* Calculate hash for decimal */
-            hash = (uint64_t)key % ht->size;
+            hash = (uint64_t)key_value % ht->size;
             break;
         case _STRING_ELEM:
             /* Calculate hash for decimal */
-            hash = _strhash((uint8_t*)key, ht->size);
+            hash = _strhash((uint8_t*)key_value, ht->size);
             break;
     }
 
-    return get_node(ht->pp_node[hash], hash);
+    return get_node(ht->pp_node[hash], ht->type.key, key_value);
 }
 
 void set_hashtab(struct HashTab* ht, void* key, void* value)
@@ -178,7 +171,7 @@ _Bool in_hashtab(struct HashTab* ht, void* key)
             break;
     }
 
-    return in_list(ht->pp_node[hash], hash);
+    return in_list(ht->pp_node[hash], key);
 }
 
 void print_hashtab(struct HashTab* ht)
