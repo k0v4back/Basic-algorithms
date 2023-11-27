@@ -38,7 +38,7 @@ int main(void)
     print_hashtab(hashtab);
 
 
-    if (in_hashtab(hashtab, "A") == true)
+    if (in_hashtab(hashtab, "C") == true)
         printf("TRUE\n");
     else
         printf("FALSE\n");
