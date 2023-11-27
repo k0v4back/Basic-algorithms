@@ -5,36 +5,38 @@
 
 using namespace std;
 
-template<typename T> class List {
+template<typename ListType>
+class List {
 public:
     List();
     ~List();
 
-    void push_back(T data);
-    void push_front(T data);
+    void push_back(ListType data);
+    void push_front(ListType data);
     void pop_back(void);
     void pop_front(void);
-    void insert(T data, int index);
+    void insert(ListType data, int index);
     void remove_at(int index);
     void clear(void);
     void print_nodes(void);
-    T& operator[](const int index);
+    ListType& operator[](const int index);
 
     int GetListSize(void);
 private:
-    template<typename U> class Node {
+    template<typename NodeType>
+    class Node {
     public:
-        U data;
+        NodeType data;
         Node* next;
 
-        Node(U data = U(), Node* next = nullptr) {
+        Node(NodeType data = NodeType(), Node* next = nullptr) {
             this->data = data;
             this->next = next;
         }
     };
 
     int list_size;
-    Node<T>* first;
+    Node<ListType>* first;
 };
 
 #endif /* _LINKED_LIST_H_ */

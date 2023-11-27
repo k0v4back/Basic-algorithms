@@ -4,42 +4,47 @@
 
 using namespace std;
 
-template<typename T> List<T>::List() {
+template<typename ListType>
+List<ListType>::List() {
     list_size = 0;
     first = nullptr;
 }
 
-template<typename T> List<T>::~List() {
+template<typename ListType>
+List<ListType>::~List() {
     clear();
 }
 
-template<typename T> void List<T>::push_back(T data) {
+template<typename ListType>
+void List<ListType>::push_back(ListType data) {
     if (!first) {
-        first = new Node<T>(data);
+        first = new Node<ListType>(data);
     } else {
-        Node<T>* current = first;
+        Node<ListType>* current = first;
 
         while (current->next)
             current = current->next;
 
-        current->next = new Node<T>(data);
+        current->next = new Node<ListType>(data);
     }
 
     list_size++;
 }
 
-template<typename T> void List<T>::push_front(T data) {
-    Node<T>* current = first;
+template<typename ListType>
+void List<ListType>::push_front(ListType data) {
+    Node<ListType>* current = first;
 
-    first = new Node<T>(data);
+    first = new Node<ListType>(data);
     first->next = current;
 
     list_size++;
 }
 
-template<typename T> void List<T>::pop_back(void) {
-    Node<T>* current = first;
-    Node<T>* deleteNode = nullptr;
+template<typename ListType>
+void List<ListType>::pop_back(void) {
+    Node<ListType>* current = first;
+    Node<ListType>* deleteNode = nullptr;
 
     for (int i = 0; i < list_size - 2; i++) {
         current = current->next;
@@ -52,8 +57,9 @@ template<typename T> void List<T>::pop_back(void) {
     list_size--;
 }
 
-template<typename T> void List<T>::pop_front(void) {
-    Node<T>* current = first;
+template<typename ListType>
+void List<ListType>::pop_front(void) {
+    Node<ListType>* current = first;
 
     first = first->next;
     delete current;
@@ -61,9 +67,10 @@ template<typename T> void List<T>::pop_front(void) {
     list_size--;
 }
 
-template<typename T> void List<T>::insert(T data, int index) {
-    Node<T>* current = first;
-    Node<T>* new_node = nullptr;
+template<typename ListType>
+void List<ListType>::insert(ListType data, int index) {
+    Node<ListType>* current = first;
+    Node<ListType>* new_node = nullptr;
 
     if (index == 0)
         push_front(data);
@@ -72,14 +79,15 @@ template<typename T> void List<T>::insert(T data, int index) {
         current = current->next;
     }
 
-    new_node = new Node<T>(data, current->next);
+    new_node = new Node<ListType>(data, current->next);
     current->next = new_node;
     list_size++;
 }
 
-template<typename T> void List<T>::remove_at(int index) {
-    Node<T>* current = first;
-    Node<T>* deleteNode = nullptr;
+template<typename ListType>
+void List<ListType>::remove_at(int index) {
+    Node<ListType>* current = first;
+    Node<ListType>* deleteNode = nullptr;
 
     if (index == 0) {
         pop_front();
@@ -96,13 +104,15 @@ template<typename T> void List<T>::remove_at(int index) {
     }
 }
 
-template<typename T> void List<T>::clear(void) {
+template<typename ListType>
+void List<ListType>::clear(void) {
     while (list_size)
         pop_front();
 }
 
-template<typename T> void List<T>::print_nodes(void) {
-    Node<T>* current = first;
+template<typename ListType>
+void List<ListType>::print_nodes(void) {
+    Node<ListType>* current = first;
 
     while (current) {
         cout << current->data << endl;
@@ -110,8 +120,9 @@ template<typename T> void List<T>::print_nodes(void) {
     }
 }
 
-template<typename T> T& List<T>::operator[](const int index) {
-    Node<T>* current = first;
+template<typename ListType>
+ListType& List<ListType>::operator[](const int index) {
+    Node<ListType>* current = first;
     int i = 0;
 
     while(current) {
@@ -122,6 +133,7 @@ template<typename T> T& List<T>::operator[](const int index) {
     }
 }
 
-template<typename T> int List<T>::GetListSize(void) {
+template<typename ListType>
+int List<ListType>::GetListSize(void) {
     return list_size;
 }
