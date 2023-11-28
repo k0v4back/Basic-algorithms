@@ -131,9 +131,13 @@ ListType& List<ListType>::operator[](const int index) {
         current = current->next;
         i++;
     }
+
+    return current->data;
 }
 
 template<typename ListType>
 int List<ListType>::GetListSize(void) {
     return list_size;
 }
+
+template class List<int>;
