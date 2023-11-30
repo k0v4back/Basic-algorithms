@@ -115,7 +115,7 @@ void List<ListType>::print_nodes(void) {
     Node<ListType>* current = first;
 
     while (current) {
-        cout << current->data << endl;
+        cout << current->data << ", ";
         current = current->next;
     }
 }

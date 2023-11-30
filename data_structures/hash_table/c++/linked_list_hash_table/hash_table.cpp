@@ -20,8 +20,10 @@ HashTab<T>::HashTab(int size) {
 
     ppNode = new List<T>*[size];
 
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++) {
+        ppNode[i] = new List<T>;
         ppNode[i]->push_back(0);
+    }
 }
 
 template<typename T>
@@ -46,8 +48,11 @@ bool HashTab<T>::inHashTab(T key) {
 
 template<typename T>
 void HashTab<T>::printHashTab() {
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++) {
+        cout << "{ ";
         ppNode[hashCalculate(i)]->print_nodes();
+        cout << "}\n";
+    }
 }
 
 template<typename T>
