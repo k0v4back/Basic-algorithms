@@ -17,8 +17,9 @@ public:
     class Node* searchNode(class Node* node, int key);
     class Node* getMinNode(class Node* node);
     class Node* getMaxNode(class Node* node);
-    void printTree(class Node* node);
-
+    void symmetricTreePrint(class Node* node);
+    void reverseTreePrint(class Node* node);
+    void directTreePrint(class Node* node);
 
     class Node* currentNode = nullptr;
 };

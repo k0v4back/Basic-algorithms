@@ -32,18 +32,22 @@ void Node::insertNode(class Node* node, int key, int value) {
 class Node* Node::deleteNode(class Node* node, int key) {
     if (node == nullptr)
         return nullptr;
-    else if (node->key > key)
-        delete node->left;
-    else if (node->key < key)
-        delete node->right;
+    else if (key < node->key)
+        deleteNode(node->left, key);
+    else if (key > node->key)
+        deleteNode(node->right, key);
     else {
+        /* Overwriting the deleted item with one of the parents */
         if (node->left == nullptr && node->right == nullptr) {
             if (node->left == nullptr)
                 node = node->right;
             else
                 node = node->left;
         } else {
-
+            class Node* maxInLeft = getMaxNode(node->left);
+            node->key = maxInLeft->key;
+            node->value = maxInLeft->value;
+            node->right = deleteNode(node->right, maxInLeft->key);
         }
     }
 
@@ -83,11 +87,29 @@ class Node* Node::getMaxNode(class Node* node) {
     return getMaxNode(node);
 }
 
-void Node::printTree(class Node* node) {
+void Node::symmetricTreePrint(class Node* node) {
     if (node == nullptr)
         return;
     
-    printTree(node->left);
+    symmetricTreePrint(node->left);
     std::cout << node->value << std::endl;
-    printTree(node->right);
+    symmetricTreePrint(node->right);
+}
+
+void Node::reverseTreePrint(class Node* node) {
+    if (node == nullptr)
+        return;
+    
+    reverseTreePrint(node->left);
+    reverseTreePrint(node->right);
+    std::cout << node->value << std::endl;
+}
+
+void Node::directTreePrint(class Node* node) {
+    if (node == nullptr)
+        return;
+    
+    std::cout << node->value << std::endl;    
+    directTreePrint(node->left);
+    directTreePrint(node->right);
 }
