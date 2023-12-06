@@ -3,18 +3,19 @@
 
 #include <iostream>
 
+template<typename KeyType, typename ValueType>
 class Node {
 public:
-    Node(int key, int value);
+    Node(KeyType key, ValueType value);
     ~Node();
-    int key;
-    int value;
+    KeyType key;
+    ValueType value;
     class Node* left = nullptr;
     class Node* right = nullptr;
 
-    void insertNode(class Node* node, int key, int value);
-    class Node* deleteNode(class Node* node, int key);
-    class Node* searchNode(class Node* node, int key);
+    void insertNode(class Node* node, KeyType key, ValueType value);
+    class Node* deleteNode(class Node* node, KeyType key);
+    class Node* searchNode(class Node* node, KeyType key);
     class Node* getMinNode(class Node* node);
     class Node* getMaxNode(class Node* node);
     void symmetricTreePrint(class Node* node);

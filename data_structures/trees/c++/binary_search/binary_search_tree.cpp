@@ -2,16 +2,19 @@
 
 #include "binary_search_tree.h"
 
-Node::Node(int key, int value) {
+template<typename KeyType, typename ValueType>
+Node<KeyType, ValueType>::Node(KeyType key, ValueType value) {
     this->key = key;
     this->value = value;
 }
 
-Node::~Node() {
+template<typename KeyType, typename ValueType>
+Node<KeyType, ValueType>::~Node() {
     std::cout << "Node delete\n";
 }
 
-void Node::insertNode(class Node* node, int key, int value) {
+template<typename KeyType, typename ValueType>
+void Node<KeyType, ValueType>::insertNode(class Node* node, KeyType key, ValueType value) {
     /* Recursively go to the left */
     if (key < node->key) {
         if (node->left == nullptr)
@@ -29,7 +32,8 @@ void Node::insertNode(class Node* node, int key, int value) {
     }
 }
 
-class Node* Node::deleteNode(class Node* node, int key) {
+template<typename KeyType, typename ValueType>
+class Node<KeyType, ValueType>* Node<KeyType, ValueType>::deleteNode(class Node* node, KeyType key) {
     if (node == nullptr)
         return nullptr;
     else if (key < node->key)
@@ -54,7 +58,8 @@ class Node* Node::deleteNode(class Node* node, int key) {
     return node;
 }
 
-class Node* Node::searchNode(class Node* node, int key) {
+template<typename KeyType, typename ValueType>
+class Node<KeyType, ValueType>* Node<KeyType, ValueType>::searchNode(class Node* node, KeyType key) {
     if (node == nullptr)
         return nullptr;
     
@@ -65,9 +70,12 @@ class Node* Node::searchNode(class Node* node, int key) {
         searchNode(node->left, node->key);
     else
         searchNode(node->right, node->key);
+    
+    return node;
 }
 
-class Node* Node::getMinNode(class Node* node) {
+template<typename KeyType, typename ValueType>
+class Node<KeyType, ValueType>* Node<KeyType, ValueType>::getMinNode(class Node* node) {
     if (node == nullptr)
         return nullptr;
     
@@ -77,7 +85,8 @@ class Node* Node::getMinNode(class Node* node) {
     return getMinNode(node);
 }
 
-class Node* Node::getMaxNode(class Node* node) {
+template<typename KeyType, typename ValueType>
+class Node<KeyType, ValueType>* Node<KeyType, ValueType>::getMaxNode(class Node* node) {
     if (node == nullptr)
         return nullptr;
 
@@ -87,7 +96,8 @@ class Node* Node::getMaxNode(class Node* node) {
     return getMaxNode(node);
 }
 
-void Node::symmetricTreePrint(class Node* node) {
+template<typename KeyType, typename ValueType>
+void Node<KeyType, ValueType>::symmetricTreePrint(class Node* node) {
     if (node == nullptr)
         return;
     
@@ -96,7 +106,8 @@ void Node::symmetricTreePrint(class Node* node) {
     symmetricTreePrint(node->right);
 }
 
-void Node::reverseTreePrint(class Node* node) {
+template<typename KeyType, typename ValueType>
+void Node<KeyType, ValueType>::reverseTreePrint(class Node* node) {
     if (node == nullptr)
         return;
     
@@ -105,7 +116,8 @@ void Node::reverseTreePrint(class Node* node) {
     std::cout << node->value << std::endl;
 }
 
-void Node::directTreePrint(class Node* node) {
+template<typename KeyType, typename ValueType>
+void Node<KeyType, ValueType>::directTreePrint(class Node* node) {
     if (node == nullptr)
         return;
     
@@ -113,3 +125,6 @@ void Node::directTreePrint(class Node* node) {
     directTreePrint(node->left);
     directTreePrint(node->right);
 }
+
+template class Node<int, int>;
+template class Node<int, std::string>;
