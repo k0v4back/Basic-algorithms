@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <vector>
 #include <map>
+#include <queue>
 
 #include "list_graph.h"
 
@@ -44,6 +45,32 @@ void ListGraph::dfs(int v) {
         if (!visited[*it])
             dfs(*it);
     }
+}
+
+std::vector<int> ListGraph::bfs(int start) {
+    std::vector<int> visited(vertexNumber);
+    std::vector<int> dist(vertexNumber, INF);
+    std::queue<int> q;
+
+    visited[start] = 1;
+    dist[start] = 0;
+    q.push(start);
+
+    while (!q.empty()) {
+        /* Removing vertex from the queue */
+        int vertex = q.front();
+        q.pop();
+
+        /* Looking through all neighboring vertices for a given vertex */
+        for (int to : graph[vertex]) {
+            if (!visited[to]) {
+                visited[to] = 1;
+                dist[to] = dist[vertex] + 1;
+                q.push(to);
+            }
+        }
+    }
+    return dist;
 }
 
 void ListGraph::PrintGraph() const {

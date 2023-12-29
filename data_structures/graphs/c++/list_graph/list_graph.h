@@ -1,12 +1,15 @@
 #ifndef _LIST_GRAPH_H_
 #define _LIST_GRAPH_H_
 
+#include <iostream>
+
 #include <list>
 #include <map>
+#include <vector>
 
 #include "graph.h"
 
-#include <iostream>
+#define INF 1000000000UL
 
 class ListGraph : public Graph {
 private:
@@ -21,6 +24,7 @@ public:
     bool HasEdge(int from, int to) override;
     int CountVertex() const override;
     void dfs(int v) override;
+    std::vector<int> bfs(int start) override;
     void PrintGraph() const override;
 };
 

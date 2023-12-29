@@ -2,6 +2,7 @@
 #define _GRAPH_H_
 
 #include <iostream>
+#include <vector>
 
 class Graph {
 public:
@@ -10,6 +11,7 @@ public:
     virtual bool HasEdge(int from, int to) = 0;
     virtual int CountVertex() const = 0;
     virtual void dfs(int v) = 0;
+    virtual std::vector<int> bfs(int start) = 0;
     virtual void PrintGraph() const = 0;
 };
 
