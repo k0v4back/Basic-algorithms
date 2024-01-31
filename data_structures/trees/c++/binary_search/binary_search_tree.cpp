@@ -14,116 +14,116 @@ Node<KeyType, ValueType>::~Node() {
 }
 
 template<typename KeyType, typename ValueType>
-void Node<KeyType, ValueType>::insertNode(class Node* node, KeyType key, ValueType value) {
+void Node<KeyType, ValueType>::insertNode(class Node* rootNode, KeyType key, ValueType value) {
     /* Recursively go to the left */
-    if (key < node->key) {
-        if (node->left == nullptr)
-            node->left = new Node(key, value);
+    if (key < rootNode->key) {
+        if (rootNode->left == nullptr)
+            rootNode->left = new Node(key, value);
         else
-            insertNode(node->left, key, value);
+            insertNode(rootNode->left, key, value);
     }
 
     /* Recursively go to the right */
-    if (key >= node->key) {
-        if (node->right == nullptr)
-            node->right = new Node(key, value);
+    if (key >= rootNode->key) {
+        if (rootNode->right == nullptr)
+            rootNode->right = new Node(key, value);
         else
-            insertNode(node->right, key, value);
+            insertNode(rootNode->right, key, value);
     }
 }
 
 template<typename KeyType, typename ValueType>
-class Node<KeyType, ValueType>* Node<KeyType, ValueType>::deleteNode(class Node* node, KeyType key) {
-    if (node == nullptr)
+class Node<KeyType, ValueType>* Node<KeyType, ValueType>::deleteNode(class Node* rootNode, KeyType key) {
+    if (rootNode == nullptr)
         return nullptr;
-    else if (key < node->key)
-        deleteNode(node->left, key);
-    else if (key > node->key)
-        deleteNode(node->right, key);
+    else if (key < rootNode->key)
+        deleteNode(rootNode->left, key);
+    else if (key > rootNode->key)
+        deleteNode(rootNode->right, key);
     else {
         /* Overwriting the deleted item with one of the parents */
-        if (node->left == nullptr && node->right == nullptr) {
-            if (node->left == nullptr)
-                node = node->right;
+        if (rootNode->left == nullptr && rootNode->right == nullptr) {
+            if (rootNode->left == nullptr)
+                rootNode = rootNode->right;
             else
-                node = node->left;
+                rootNode = rootNode->left;
         } else {
-            class Node* maxInLeft = getMaxNode(node->left);
-            node->key = maxInLeft->key;
-            node->value = maxInLeft->value;
-            node->right = deleteNode(node->right, maxInLeft->key);
+            class Node* maxInLeft = getMaxNode(rootNode->left);
+            rootNode->key = maxInLeft->key;
+            rootNode->value = maxInLeft->value;
+            rootNode->right = deleteNode(rootNode->right, maxInLeft->key);
         }
     }
 
-    return node;
+    return rootNode;
 }
 
 template<typename KeyType, typename ValueType>
-class Node<KeyType, ValueType>* Node<KeyType, ValueType>::searchNode(class Node* node, KeyType key) {
-    if (node == nullptr)
+class Node<KeyType, ValueType>* Node<KeyType, ValueType>::searchNode(class Node* rootNode, KeyType key) {
+    if (rootNode == nullptr)
         return nullptr;
     
-    if (node->key == key)
-        return node;
+    if (rootNode->key == key)
+        return rootNode;
     
-    if (node->key > key)
-        searchNode(node->left, node->key);
+    if (rootNode->key > key)
+        searchNode(rootNode->left, rootNode->key);
     else
-        searchNode(node->right, node->key);
+        searchNode(rootNode->right, rootNode->key);
     
-    return node;
+    return rootNode;
 }
 
 template<typename KeyType, typename ValueType>
-class Node<KeyType, ValueType>* Node<KeyType, ValueType>::getMinNode(class Node* node) {
-    if (node == nullptr)
+class Node<KeyType, ValueType>* Node<KeyType, ValueType>::getMinNode(class Node* rootNode) {
+    if (rootNode == nullptr)
         return nullptr;
     
-    if (node->left == nullptr)
-        return node;
+    if (rootNode->left == nullptr)
+        return rootNode;
     
-    return getMinNode(node);
+    return getMinNode(rootNode);
 }
 
 template<typename KeyType, typename ValueType>
-class Node<KeyType, ValueType>* Node<KeyType, ValueType>::getMaxNode(class Node* node) {
-    if (node == nullptr)
+class Node<KeyType, ValueType>* Node<KeyType, ValueType>::getMaxNode(class Node* rootNode) {
+    if (rootNode == nullptr)
         return nullptr;
 
-    if (node->right == nullptr)
-        return node;
+    if (rootNode->right == nullptr)
+        return rootNode;
     
-    return getMaxNode(node);
+    return getMaxNode(rootNode);
 }
 
 template<typename KeyType, typename ValueType>
-void Node<KeyType, ValueType>::symmetricTreePrint(class Node* node) {
-    if (node == nullptr)
+void Node<KeyType, ValueType>::symmetricTreePrint(class Node* rootNode) {
+    if (rootNode == nullptr)
         return;
     
-    symmetricTreePrint(node->left);
-    std::cout << node->value << std::endl;
-    symmetricTreePrint(node->right);
+    symmetricTreePrint(rootNode->left);
+    std::cout << rootNode->value << std::endl;
+    symmetricTreePrint(rootNode->right);
 }
 
 template<typename KeyType, typename ValueType>
-void Node<KeyType, ValueType>::reverseTreePrint(class Node* node) {
-    if (node == nullptr)
+void Node<KeyType, ValueType>::reverseTreePrint(class Node* rootNode) {
+    if (rootNode == nullptr)
         return;
     
-    reverseTreePrint(node->left);
-    reverseTreePrint(node->right);
-    std::cout << node->value << std::endl;
+    reverseTreePrint(rootNode->left);
+    reverseTreePrint(rootNode->right);
+    std::cout << rootNode->value << std::endl;
 }
 
 template<typename KeyType, typename ValueType>
-void Node<KeyType, ValueType>::directTreePrint(class Node* node) {
-    if (node == nullptr)
+void Node<KeyType, ValueType>::directTreePrint(class Node* rootNode) {
+    if (rootNode == nullptr)
         return;
     
-    std::cout << node->value << std::endl;    
-    directTreePrint(node->left);
-    directTreePrint(node->right);
+    std::cout << rootNode->value << std::endl;    
+    directTreePrint(rootNode->left);
+    directTreePrint(rootNode->right);
 }
 
 template class Node<int, int>;

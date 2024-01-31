@@ -13,14 +13,14 @@ public:
     class Node* left = nullptr;
     class Node* right = nullptr;
 
-    void insertNode(class Node* node, KeyType key, ValueType value);
-    class Node* deleteNode(class Node* node, KeyType key);
-    class Node* searchNode(class Node* node, KeyType key);
-    class Node* getMinNode(class Node* node);
-    class Node* getMaxNode(class Node* node);
-    void symmetricTreePrint(class Node* node);
-    void reverseTreePrint(class Node* node);
-    void directTreePrint(class Node* node);
+    void insertNode(class Node* rootNode, KeyType key, ValueType value);
+    class Node* deleteNode(class Node* rootNode, KeyType key);
+    class Node* searchNode(class Node* rootNode, KeyType key);
+    class Node* getMinNode(class Node* rootNode);
+    class Node* getMaxNode(class Node* rootNode);
+    void symmetricTreePrint(class Node* rootNode);
+    void reverseTreePrint(class Node* rootNode);
+    void directTreePrint(class Node* rootNode);
 
     class Node* currentNode = nullptr;
 };
