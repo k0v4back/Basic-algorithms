@@ -1,0 +1,1 @@
+Given an array A of n — 1 integers in the range from 1 to n. Find the element that does not have a pair

@@ -1,0 +1,1 @@
+Given an array A of n — 1 integers in the range from 1 to n. All numbers occur in it exactly once, except for one missing number. Find this missing number.
